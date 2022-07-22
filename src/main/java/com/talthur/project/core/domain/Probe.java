@@ -10,6 +10,7 @@ public class Probe extends StarShip {
         super(orientationEnum, probeName, row, column);
     }
 
+    @Override
     public List<Integer> move() {
         return switch (orientation) {
             case NORTH -> List.of(-1, 0);
@@ -19,6 +20,7 @@ public class Probe extends StarShip {
         };
     }
 
+    @Override
     public void rotate(char command) {
         if (command == 'L') {
             this.orientation = orientation.getPrevious();

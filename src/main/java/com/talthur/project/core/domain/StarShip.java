@@ -13,7 +13,7 @@ public abstract class StarShip {
     @Getter
     protected OrientationEnum orientation;
     @Getter
-    protected final String probeName;
+    protected final String shipName;
     @Getter
     @Setter
     protected List<Integer> actualPosition = new ArrayList<>(2);
@@ -21,12 +21,12 @@ public abstract class StarShip {
     protected StarShip(OrientationEnum orientationEnum, String shipName, int row, int column) {
         actualPosition.add(row);
         actualPosition.add(column);
-        this.probeName = shipName;
+        this.shipName = shipName;
         this.orientation = orientationEnum;
     }
 
-    abstract List<Integer> move();
+    public abstract List<Integer> move();
 
-    abstract void rotate(char command);
+    public abstract void rotate(char command);
 
 }

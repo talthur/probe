@@ -28,18 +28,21 @@ public class PlanetUseCase {
         return planetInMemory.getAll();
     }
 
-    public Probe placeProbe(String planetId, int x, int y, OrientationEnum orientationEnum, String name) {
+    public StarShip placeProbe(String planetId, int x, int y, OrientationEnum orientationEnum, String name) {
         Planet planet = planetInMemory.getPlanet(planetId);
         Probe probe = new Probe(orientationEnum, name, x, y);
         planet.placeStarShip(x, y, probe);
         return probe;
     }
 
-    public Probe moveProbe(String planetId, String probeName, String command) {
-        Probe probe = getProbe(planetId, probeName);
+    public StarShip moveProbe(String planetId, String probeName, String command) {
+        Planet planet = planetInMemory.getPlanet(planetId);
+        StarShip probe = getProbe(planetId, probeName);
+        command.chars().mapToObj(c->(char) c).forEach(character -> doCommand(probe, planet, character));
+        return probe;
     }
 
-    private Probe getProbe(String planetId, String probeName) {
+    private StarShip getProbe(String planetId, String probeName) {
         Planet planet = planetInMemory.getPlanet(planetId);
         StarShip starShip = planet.getStarShip(probeName);
         if (starShip instanceof Probe probe) {
@@ -48,4 +51,22 @@ public class PlanetUseCase {
             throw new BusinessException(BusinessError.PROBE_NOT_FOUND);
         }
     }
+
+    private void doCommand(StarShip starShip, Planet planet, char command) {
+        switch (command) {
+            case 'L':
+                starShip.rotate(command);
+                break;
+            case 'R':
+                starShip.rotate(command);
+                break;
+            case 'M': {
+                planet.moveProbe(starShip);
+                break;
+            }
+            default:
+                throw new BusinessException(BusinessError.PLACEMENT_NOT_ALLOWED_OCUPPIED);
+        }
+    }
+
 }

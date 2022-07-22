@@ -35,7 +35,7 @@ public class Planet {
             throw new BusinessException(BusinessError.PLACEMENT_NOT_ALLOWED_OCUPPIED);
         } else {
             area[rows - 1][columns - 1].setStarShip(probe);
-            starShips.put(probe.getProbeName(), probe);
+            starShips.put(probe.getShipName(), probe);
         }
     }
 
