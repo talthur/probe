@@ -25,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/planets")
+@RequestMapping("v1/planets")
 public class PlanetController implements PlanetControllerApi {
 
     private final PlanetUseCase planetUseCase;

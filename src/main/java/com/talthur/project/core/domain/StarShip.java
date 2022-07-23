@@ -18,9 +18,9 @@ public abstract class StarShip {
     @Setter
     protected List<Integer> actualPosition = new ArrayList<>(2);
 
-    protected StarShip(OrientationEnum orientationEnum, String shipName, int row, int column) {
-        actualPosition.add(row);
+    protected StarShip(OrientationEnum orientationEnum, String shipName, int column, int row) {
         actualPosition.add(column);
+        actualPosition.add(row);
         this.shipName = shipName;
         this.orientation = orientationEnum;
     }

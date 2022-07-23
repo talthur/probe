@@ -13,10 +13,10 @@ public class Probe extends StarShip {
     @Override
     public List<Integer> move() {
         return switch (orientation) {
-            case NORTH -> List.of(-1, 0);
-            case EAST -> List.of(0, 1);
-            case SOUTH -> List.of(1, 0);
-            case WEST -> List.of(0, -1);
+            case NORTH -> List.of(0, -1);
+            case EAST -> List.of(1, 0);
+            case SOUTH -> List.of(0, 1);
+            case WEST -> List.of(-1, 0);
         };
     }
 
