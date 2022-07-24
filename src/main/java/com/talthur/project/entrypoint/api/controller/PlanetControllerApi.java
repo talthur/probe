@@ -20,7 +20,7 @@ import java.util.List;
 @OpenAPIDefinition(info = @Info(title = "Desafio Técnico", version = "1.0.0", description = "Desafio técnico de Java"))
 public interface PlanetControllerApi {
 
-    @Operation(summary = "Create Planet", tags = "Create Planet Controller", responses = {
+    @Operation(summary = "Create Planet", tags = "Planet Controller", responses = {
         @ApiResponse(responseCode = "200", description = "Planet Created", content = @Content(
             mediaType = MediaType.APPLICATION_JSON_VALUE,
             schema = @Schema(name = "Response for Planet Creation", implementation = PlanetOut.class)
@@ -28,7 +28,7 @@ public interface PlanetControllerApi {
     })
     PlanetOut createPlanet(PlanetIn planetIn);
 
-    @Operation(summary = "Get planets", tags = "Get Planets Controller", responses = {
+    @Operation(summary = "Get planets", tags = "Planet Controller", responses = {
         @ApiResponse(responseCode = "200", description = "Planets retrieved", content = @Content(
             mediaType = MediaType.APPLICATION_JSON_VALUE,
             schema = @Schema(name = "Response for Planet Creation", implementation = PlanetOut.class)
@@ -36,7 +36,7 @@ public interface PlanetControllerApi {
     })
     List<PlanetOut> getPlanets();
 
-    @Operation(summary = "Create probe", tags = "Create Probe Controller", responses = {
+    @Operation(summary = "Create probe", tags = "Probe Controller", responses = {
         @ApiResponse(responseCode = "200", description = "Probe Created", content = @Content(
             mediaType = MediaType.APPLICATION_JSON_VALUE,
             schema = @Schema(name = "Response for Probe Creation", implementation = ProbeOut.class)
@@ -48,7 +48,19 @@ public interface PlanetControllerApi {
     })
     ProbeOut createProbe(OrientationEnum orientationEnum, CreateProbeIn createProbeIn);
 
-    @Operation(summary = "Move probe", tags = "Move Probe Controller", responses = {
+    @Operation(summary = "Get probe", tags = "Probe Controller", responses = {
+        @ApiResponse(responseCode = "200", description = "Get probe", content = @Content(
+            mediaType = MediaType.APPLICATION_JSON_VALUE,
+            schema = @Schema(name = "Response for get Probe", implementation = ProbeOut.class)
+        )),
+        @ApiResponse(responseCode = "404", description = "Planet or probe does not exist", content = @Content(
+            mediaType = MediaType.APPLICATION_JSON_VALUE,
+            schema = @Schema(name = "Not found", implementation = ExceptionData.class)
+        ))
+    })
+    ProbeOut getProbe(String planetId, String probeName);
+
+    @Operation(summary = "Move probe", tags = "Probe Controller", responses = {
         @ApiResponse(responseCode = "204", description = "Probe moved", content = @Content(
             mediaType = MediaType.APPLICATION_JSON_VALUE,
             schema = @Schema(name = "Response for Probe movement", implementation = ProbeOut.class)

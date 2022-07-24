@@ -38,11 +38,11 @@ public class PlanetUseCase {
     public StarShip moveProbe(String planetId, String probeName, String command) {
         Planet planet = planetInMemory.getPlanet(planetId);
         StarShip probe = getProbe(planetId, probeName);
-        command.chars().mapToObj(c->(char) c).forEach(character -> doCommand(probe, planet, character));
+        command.toUpperCase().chars().mapToObj(c->(char) c).forEach(character -> doCommand(probe, planet, character));
         return probe;
     }
 
-    private StarShip getProbe(String planetId, String probeName) {
+    public StarShip getProbe(String planetId, String probeName) {
         Planet planet = planetInMemory.getPlanet(planetId);
         StarShip starShip = planet.getStarShip(probeName);
         if (starShip instanceof Probe probe) {
@@ -54,18 +54,9 @@ public class PlanetUseCase {
 
     private void doCommand(StarShip starShip, Planet planet, char command) {
         switch (command) {
-            case 'L':
-                starShip.rotate(command);
-                break;
-            case 'R':
-                starShip.rotate(command);
-                break;
-            case 'M': {
-                planet.moveProbe(starShip);
-                break;
-            }
-            default:
-                throw new BusinessException(BusinessError.PLACEMENT_NOT_ALLOWED_OCUPPIED);
+            case 'L', 'R' -> starShip.rotate(command);
+            case 'M' -> planet.moveProbe(starShip);
+            default -> throw new BusinessException(BusinessError.PLACEMENT_NOT_ALLOWED_OCUPPIED);
         }
     }
 

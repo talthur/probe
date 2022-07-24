@@ -8,3 +8,18 @@ springdoc:
     swagger-ui:
         path: /
         disable-swagger-default-url: true
+
+management:
+    health:
+        diskspace:
+            enabled: false
+    endpoint:
+        health:
+            show-details: always
+    endpoints:
+        web:
+            exposure:
+                include: prometheus, health
+            base-path: '/'
+            path-mapping:
+                prometheus: 'metrics'
