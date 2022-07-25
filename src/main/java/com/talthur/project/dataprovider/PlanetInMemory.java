@@ -17,6 +17,12 @@ public class PlanetInMemory {
         planetList.add(planet);
     }
 
+    public void updatePlanet(String planetId, Planet planet){
+        Planet planetToBeUpdated = getPlanet(planetId);
+        int index = planetList.indexOf(planetToBeUpdated);
+        planetList.set(index, planet);
+    }
+
     public List<Planet> getAll() {
         return planetList;
     }

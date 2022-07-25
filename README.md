@@ -20,3 +20,7 @@
 3. Faça um put para movimentá-la em [/v1/planets/probes](http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config#/Probe%20Controller/createProbe)
 4. Caso queira conferir a posição da probe, faça um get em [/v1/planets/{planetId}/{probeName}](http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config#/Probe%20Controller/getProbe)
 5. Caso queira listar os planetas e seus conteúdos, faça um get em [/v1/planets](http://localhost:8080/swagger-ui/index.html?configUrl=/api-docs/swagger-config#/Planet%20Controller/getPlanets)
+
+As instruções seguem a seguinte orientação:
+
+![Alt text](instruction.png?raw=true "Instruction")

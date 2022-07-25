@@ -14,10 +14,12 @@ public enum BusinessError {
     PLANET_NOT_EXIST(20003, 404, "Planet not found",
         "The requested planet does not exist"),
     COORDINATES_INVALID(20004, 400, "Invalid coordinates",
-        "The coordinates must be greater than 0"),
+        "The coordinates must be greater than 0 and to the max size of the planet"),
     PROBE_NOT_FOUND(20005, 404, "Probe not found",
         "The requested probe was not found"),
-    BAD_REQUEST(20039, 400, "One or more validation errors ocurred", "Please check the inserted payload");
+    BAD_REQUEST(20039, 400, "One or more validation errors ocurred", "Please check the inserted payload"),
+    INVALID_COMMAND(20040, 400, "Invalid Command", "The command inserted is invalid");
+
     private final Integer code;
     private final Integer status;
     private final String title;

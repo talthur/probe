@@ -2,7 +2,7 @@ package com.talthur.project.entrypoint.api.payload;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 
 
 public record CreateProbeIn(@Schema(description = "Planet ID")
@@ -15,7 +15,7 @@ public record CreateProbeIn(@Schema(description = "Planet ID")
                             int y,
 
                             @Schema(description = "Probe name")
-                            @Max(20)
+                            @Size(min = 1, max = 20)
                             String name) {
 
 }

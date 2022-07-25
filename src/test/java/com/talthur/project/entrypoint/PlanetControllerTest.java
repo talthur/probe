@@ -4,15 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.talthur.project.core.domain.Planet;
 import com.talthur.project.core.domain.Probe;
 import com.talthur.project.core.domain.StarShip;
-import com.talthur.project.entrypoint.api.controller.impl.PlanetController;
-import com.talthur.project.entrypoint.api.handler.CustomGlobalExceptionHandler;
-import com.talthur.project.entrypoint.api.mapper.PlanetMapper;
-import com.talthur.project.entrypoint.api.payload.CreateProbeIn;
-import com.talthur.project.entrypoint.api.payload.PlanetIn;
 import com.talthur.project.core.enums.OrientationEnum;
 import com.talthur.project.core.exception.BusinessException;
 import com.talthur.project.core.exception.errors.BusinessError;
 import com.talthur.project.core.usecase.PlanetUseCase;
+import com.talthur.project.entrypoint.api.controller.impl.PlanetController;
+import com.talthur.project.entrypoint.api.handler.CustomGlobalExceptionHandler;
+import com.talthur.project.entrypoint.api.mapper.PlanetMapper;
+import com.talthur.project.entrypoint.api.payload.CreateProbeIn;
+import com.talthur.project.entrypoint.api.payload.MoveProbeIn;
+import com.talthur.project.entrypoint.api.payload.PlanetIn;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +34,7 @@ import java.util.UUID;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -46,6 +49,8 @@ class PlanetControllerTest {
     final String planetId = UUID.randomUUID().toString();
     final String probeName = "Dog";
     final StarShip probe = new Probe(OrientationEnum.NORTH, probeName, validPayload.getLeft(), validPayload.getRight());
+    final String validCommand = "LLRM";
+    final String invalidCommand = "LLRMBP";
 
 
     @Autowired
@@ -62,11 +67,11 @@ class PlanetControllerTest {
 
     @Test
     @DisplayName("Deve criar um planeta válido")
-    void shouldCreatePlanetReturn200() throws Exception {
+    void shouldCreatePlanetReturn201() throws Exception {
         mockMvc.perform(post("/v1/planets")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new PlanetIn(validPayload.getLeft(), validPayload.getRight()))))
-            .andExpect(status().is2xxSuccessful());
+            .andExpect(status().isCreated());
     }
 
     @Test
@@ -88,24 +93,25 @@ class PlanetControllerTest {
         mockMvc.perform(get("/v1/planets")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new PlanetIn(invalidPayload.getLeft(), invalidPayload.getRight()))))
-            .andExpect(status().is2xxSuccessful());
+            .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Deve criar uma probe válida")
-    void shouldCreateProbeReturn200() throws Exception {
+    void shouldCreateProbeReturn201() throws Exception {
         when(planetUseCase.placeProbe(planetId, validPayload.getLeft(), validPayload.getRight(), OrientationEnum.NORTH, probeName))
             .thenReturn(probe);
         mockMvc.perform(post("/v1/planets/probes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("orientation", OrientationEnum.NORTH.name())
                 .content(objectMapper.writeValueAsString(new CreateProbeIn(planetId, validPayload.getLeft(), validPayload.getRight(), probeName))))
-            .andExpect(status().is2xxSuccessful());
+            .andExpect(status().isCreated());
     }
+
 
     @Test
     @DisplayName("Deve retornar 404 ao tentar criar uma probe")
-    void shouldCreateProbeReturn404() throws Exception {
+    void shouldNotCreateProbeReturn404() throws Exception {
         when(planetUseCase.placeProbe(planetId, validPayload.getLeft(), validPayload.getRight(), OrientationEnum.NORTH, probeName))
             .thenThrow(new BusinessException(BusinessError.PLANET_NOT_EXIST));
         mockMvc.perform(post("/v1/planets/probes")
@@ -115,10 +121,50 @@ class PlanetControllerTest {
             .andExpect(status().isNotFound());
     }
 
-}
+    @Test
+    @DisplayName("Deve retornar 422 ao tentar criar uma probe em um espaço que já existe uma outra probe")
+    void shouldNotCreateProbeReturn422() throws Exception {
+        when(planetUseCase.placeProbe(planetId, validPayload.getLeft(), validPayload.getRight(), OrientationEnum.NORTH, probeName))
+            .thenThrow(new BusinessException(BusinessError.PLACEMENT_NOT_ALLOWED_OCUPPIED));
+        mockMvc.perform(post("/v1/planets/probes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("orientation", OrientationEnum.NORTH.name())
+                .content(objectMapper.writeValueAsString(new CreateProbeIn(planetId, validPayload.getLeft(), validPayload.getRight(), probeName))))
+            .andExpect(status().isUnprocessableEntity());
+    }
 
-//    public ProbeOut createProbe(OrientationEnum orientationEnum, @RequestBody CreateProbeIn createProbeIn) {
-//        StarShip probe = planetUseCase.placeProbe(createProbeIn.planetId(), createProbeIn.x(), createProbeIn.y(), orientationEnum,
-//            createProbeIn.name());
-//        return new ProbeOut(probe.getShipName(), probe.getActualPosition(), probe.getOrientation());
-//    }
+    @Test
+    @DisplayName("Deve retornar uma probe")
+    void shouldNotGetProbeReturn200() throws Exception {
+        when(planetUseCase.getStarShip(planetId, probeName))
+            .thenReturn(probe);
+        mockMvc.perform(MockMvcRequestBuilders
+            .get("/v1/planets/{planetId}/{probeName}", planetId, probeName))
+            .andExpect(status().isOk());
+
+    }
+
+
+    @Test
+    @DisplayName("Deve realizar um movimento válido de uma probe")
+    void shouldMoveProbeReturn() throws Exception {
+        when(planetUseCase.moveStarShip(planetId, probeName, validCommand)).thenReturn(probe);
+        mockMvc.perform(put("/v1/planets/probes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("orientation", OrientationEnum.NORTH.name())
+                .content(objectMapper.writeValueAsString(new MoveProbeIn(probeName, planetId, validCommand))))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Deve realizar um movimento válido de uma probe")
+    void shouldNotMoveProbeReturn400() throws Exception {
+        when(planetUseCase.moveStarShip(planetId, probeName, invalidCommand)).thenReturn(probe);
+        mockMvc.perform(put("/v1/planets/probes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("orientation", OrientationEnum.NORTH.name())
+                .content(objectMapper.writeValueAsString(new MoveProbeIn(probeName, planetId, invalidCommand))))
+            .andExpect(status().isBadRequest());
+    }
+
+}
