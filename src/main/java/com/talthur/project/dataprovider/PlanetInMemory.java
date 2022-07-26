@@ -17,7 +17,7 @@ public class PlanetInMemory {
         planetList.add(planet);
     }
 
-    public void updatePlanet(String planetId, Planet planet){
+    public void updatePlanet(String planetId, Planet planet) {
         Planet planetToBeUpdated = getPlanet(planetId);
         int index = planetList.indexOf(planetToBeUpdated);
         planetList.set(index, planet);

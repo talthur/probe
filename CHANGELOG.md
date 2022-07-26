@@ -1,5 +1,5 @@
-
 # Change Log
+
 Todas as notáveis mudanças nesse projeto estão documentadas nesse arquivo.
 
 - Registro das alterações é baseado no [Mantenha um Changelog](https://keepachangelog.com/pt-BR/1.0.0/);
@@ -9,4 +9,5 @@ Todas as notáveis mudanças nesse projeto estão documentadas nesse arquivo.
 ## [1.0.0-beta.1] - 2022-07-25
 
 ### Added
+
 - Primeira versão do projeto

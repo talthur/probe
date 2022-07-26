@@ -16,9 +16,9 @@ public class Planet {
     @Getter
     private final String id = UUID.randomUUID().toString();
     @Getter
-    private Map<String, StarShip> starShips = new HashMap<>();
-    @Getter
     private final Square[][] area;
+    @Getter
+    private Map<String, StarShip> starShips = new HashMap<>();
 
 
     public Planet(int columns, int rows) {

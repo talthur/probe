@@ -24,5 +24,4 @@ public enum BusinessError {
     private final Integer status;
     private final String title;
     private final String details;
-
 }

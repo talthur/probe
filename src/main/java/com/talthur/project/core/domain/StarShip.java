@@ -11,11 +11,11 @@ import java.util.List;
 @EqualsAndHashCode
 public abstract class StarShip {
 
+    @Getter
+    protected final String shipName;
     @Setter
     @Getter
     protected OrientationEnum orientation;
-    @Getter
-    protected final String shipName;
     @Getter
     @Setter
     protected List<Integer> actualPosition = new ArrayList<>(2);

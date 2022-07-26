@@ -139,9 +139,8 @@ class PlanetControllerTest {
         when(planetUseCase.getStarShip(planetId, probeName))
             .thenReturn(probe);
         mockMvc.perform(MockMvcRequestBuilders
-            .get("/v1/planets/{planetId}/{probeName}", planetId, probeName))
+                .get("/v1/planets/{planetId}/{probeName}", planetId, probeName))
             .andExpect(status().isOk());
-
     }
 
 
