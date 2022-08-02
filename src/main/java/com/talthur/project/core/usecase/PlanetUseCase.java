@@ -1,6 +1,7 @@
 package com.talthur.project.core.usecase;
 
 import com.talthur.project.core.domain.Planet;
+import com.talthur.project.core.domain.Position;
 import com.talthur.project.core.domain.Probe;
 import com.talthur.project.core.domain.StarShip;
 import com.talthur.project.core.enums.OrientationEnum;
@@ -28,11 +29,9 @@ public class PlanetUseCase {
         return planetInMemory.getAll();
     }
 
-    public StarShip placeProbe(String planetId, int x, int y, OrientationEnum orientationEnum, String name) {
-        Planet planet = planetInMemory.getPlanet(planetId);
-        Probe probe = new Probe(orientationEnum, name, x, y);
-        planet.placeStarShip(x, y, probe);
-        return probe;
+
+    public Probe placeProbe(String planetId, Position position, OrientationEnum orientationEnum, String name) {
+        return new Probe(orientationEnum, name, position, planetId);
     }
 
     public StarShip moveStarShip(String planetId, String probeName, String command) {
@@ -51,7 +50,7 @@ public class PlanetUseCase {
         switch (command) {
             case 'L', 'R' -> starShip.rotate(command);
             case 'M' -> {
-                planet.moveProbe(starShip);
+                planet.moveStarShip(starShip);
                 planetInMemory.updatePlanet(planet.getId(), planet);
             }
             default -> throw new BusinessException(BusinessError.INVALID_COMMAND);

@@ -1,6 +1,8 @@
 package com.talthur.project.entrypoint.api.controller.impl;
 
 import com.talthur.project.core.domain.Planet;
+import com.talthur.project.core.domain.Position;
+import com.talthur.project.core.domain.Probe;
 import com.talthur.project.core.domain.StarShip;
 import com.talthur.project.core.enums.OrientationEnum;
 import com.talthur.project.core.usecase.PlanetUseCase;
@@ -14,9 +16,9 @@ import com.talthur.project.entrypoint.api.payload.ProbeOut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,12 +52,11 @@ public class PlanetController implements PlanetControllerApi {
         return planetMapper.mapListOfPlanetsToListOfPlanetsOut(planets);
     }
 
-    @Override
     @PostMapping("/probes")
     @ResponseStatus(code = HttpStatus.CREATED)
     public ProbeOut createProbe(@RequestParam(name = "orientation") OrientationEnum orientationEnum,
-        @Valid @RequestBody CreateProbeIn createProbeIn) {
-        StarShip probe = planetUseCase.placeProbe(createProbeIn.planetId(), createProbeIn.x(), createProbeIn.y(), orientationEnum,
+        @Valid @RequestBody CreateProbeIn createProbeIn, Position position) {
+        Probe probe = planetUseCase.placeProbe(createProbeIn.planetId(), position, orientationEnum,
             createProbeIn.name());
         return new ProbeOut(probe.getShipName(), probe.getActualPosition(), probe.getOrientation());
     }
@@ -69,7 +70,7 @@ public class PlanetController implements PlanetControllerApi {
     }
 
     @Override
-    @PutMapping("/probes")
+    @PatchMapping("/probes")
     @ResponseStatus(code = HttpStatus.OK)
     public ProbeOut moveProbe(@Valid @RequestBody MoveProbeIn moveProbeIn) {
         StarShip starShip = planetUseCase.moveStarShip(moveProbeIn.planetId(), moveProbeIn.probeName(), moveProbeIn.command());
