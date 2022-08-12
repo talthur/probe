@@ -41,7 +41,7 @@ public interface ProbeControllerApi {
     ProbeOut getProbe(String planetId, String probeName);
 
     @Operation(summary = "Move probe", tags = "Probe Controller", responses = {
-        @ApiResponse(responseCode = "204", description = "Probe moved", content = @Content(
+        @ApiResponse(responseCode = "200", description = "Probe moved", content = @Content(
             mediaType = MediaType.APPLICATION_JSON_VALUE,
             schema = @Schema(name = "Response for Probe movement", implementation = ProbeOut.class)
         )),
