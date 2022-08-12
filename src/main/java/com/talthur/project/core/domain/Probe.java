@@ -1,65 +1,48 @@
 package com.talthur.project.core.domain;
 
-import com.talthur.project.core.enums.OrientationEnum;
+import com.talthur.project.core.enums.Direction;
 import com.talthur.project.core.exception.BusinessException;
 import com.talthur.project.core.exception.errors.BusinessError;
-import com.talthur.project.dataprovider.PlanetInMemory;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class Probe {
 
     @Getter
-    private final String shipName;
+    private final String probeName;
     @Setter
     @Getter
-    private OrientationEnum orientation;
+    private Direction direction;
     @Getter
-    private Position actualPosition;
-    private final String planetId;
-
-    @Autowired
-    private PlanetInMemory planetInMemory;
+    @Setter
+    private Coordinates coordinates;
 
 
-    public Probe(OrientationEnum orientationEnum, String probeName, Position position, String planetId) {
-
-        this.orientation = orientationEnum;
-        this.shipName = probeName;
-        this.actualPosition = position;
-        this.planetId = planetId;
+    public Probe(Direction orientationEnum, String probeName, Coordinates coordinates) {
+        this.direction = orientationEnum;
+        this.probeName = probeName;
+        this.coordinates = coordinates;
     }
 
-    public void rotate(char command) {
-        if (command == 'L') {
-            this.orientation = orientation.getPrevious();
-        }
-
-        if (command == 'R') {
-            this.orientation = orientation.getNext();
-        }
+    public void rotateProbeRight() {
+        direction = direction.turnRight();
     }
 
-    private void placeStarShip(int rows, int columns) {
-        Planet planet = planetInMemory.getPlanet(planetId);
+    public void rotateProbeLeft() {
+        direction = direction.turnLeft();
+    }
+
+    public void moveProbe(Planet planet) {
+        Coordinates nextCoordinates = coordinates.nextPosition(direction);
+        Square[][] area = planet.getArea();
+        area[area.length - coordinates.x()][coordinates.y() - 1].removeProbe();
         try {
-            if (planet.checkIfIsOccupied(rows, columns)) {
-                throw new BusinessException(BusinessError.PLACEMENT_NOT_ALLOWED_OCUPPIED);
-            } else {
-                area[columns - 1][rows - 1].setStarShip(probe);
-                starShips.put(probe.getShipName(), probe);
-            }
+            area[area.length - nextCoordinates.x()][nextCoordinates.y() - 1].setProbe(this);
         } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-            throw new BusinessException(BusinessError.COORDINATES_INVALID);
+            throw new BusinessException(BusinessError.PLACEMENT_NOT_ALLOWED_OFFLIMITS);
         }
-    }
-
-    public void moveStarShip() {
-        placeStarShip(orientation.getNextX(), orientation.getNextY());
-        actualPosition = new Position(actualPosition.getX() + orientation.getNextX(), actualPosition.getY() + orientation.getNextY());
-        area[actualPosition.get(1) - 1][actualPosition.get(0) - 1].removeProbe();
+        this.setCoordinates(nextCoordinates);
     }
 
 }

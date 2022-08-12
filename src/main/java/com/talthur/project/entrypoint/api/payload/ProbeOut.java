@@ -1,9 +1,8 @@
 package com.talthur.project.entrypoint.api.payload;
 
-import com.talthur.project.core.enums.OrientationEnum;
+import com.talthur.project.core.domain.Coordinates;
+import com.talthur.project.core.enums.Direction;
 
-import java.util.List;
-
-public record ProbeOut(String probeName, List<Integer> landingPosition, OrientationEnum orientation) {
+public record ProbeOut(String probeName, Coordinates coordinates, Direction orientation) {
 
 }

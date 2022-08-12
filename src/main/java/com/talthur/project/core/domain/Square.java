@@ -7,12 +7,12 @@ import lombok.Getter;
 public class Square {
 
     @Getter
-    private StarShip starShip;
+    private Probe probe;
     @Getter
     private boolean occupied;
 
-    public void setStarShip(StarShip probe) {
-        this.starShip = probe;
+    public void setProbe(Probe probe) {
+        this.probe = probe;
         occupied = true;
     }
 

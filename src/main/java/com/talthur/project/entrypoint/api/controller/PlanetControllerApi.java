@@ -1,12 +1,7 @@
 package com.talthur.project.entrypoint.api.controller;
 
-import com.talthur.project.core.enums.OrientationEnum;
-import com.talthur.project.core.exception.ExceptionData;
-import com.talthur.project.entrypoint.api.payload.CreateProbeIn;
-import com.talthur.project.entrypoint.api.payload.MoveProbeIn;
 import com.talthur.project.entrypoint.api.payload.PlanetIn;
 import com.talthur.project.entrypoint.api.payload.PlanetOut;
-import com.talthur.project.entrypoint.api.payload.ProbeOut;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -35,45 +30,5 @@ public interface PlanetControllerApi {
         )),
     })
     List<PlanetOut> getPlanets();
-
-    @Operation(summary = "Create probe", tags = "Probe Controller", responses = {
-        @ApiResponse(responseCode = "200", description = "Probe Created", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(name = "Response for Probe Creation", implementation = ProbeOut.class)
-        )),
-        @ApiResponse(responseCode = "422", description = "Placement not allowed", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(name = "Internal server error", implementation = ExceptionData.class)
-        ))
-    })
-    ProbeOut createProbe(OrientationEnum orientationEnum, CreateProbeIn createProbeIn);
-
-    @Operation(summary = "Get probe", tags = "Probe Controller", responses = {
-        @ApiResponse(responseCode = "200", description = "Get probe", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(name = "Response for get Probe", implementation = ProbeOut.class)
-        )),
-        @ApiResponse(responseCode = "404", description = "Planet or probe does not exist", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(name = "Not found", implementation = ExceptionData.class)
-        ))
-    })
-    ProbeOut getProbe(String planetId, String probeName);
-
-    @Operation(summary = "Move probe", tags = "Probe Controller", responses = {
-        @ApiResponse(responseCode = "204", description = "Probe moved", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(name = "Response for Probe movement", implementation = ProbeOut.class)
-        )),
-        @ApiResponse(responseCode = "422", description = "Placement not allowed", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(name = "Internal server error", implementation = ExceptionData.class)
-        )),
-        @ApiResponse(responseCode = "404", description = "Planet or probe does not exist", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(name = "Not found", implementation = ExceptionData.class)
-        ))
-    })
-    ProbeOut moveProbe(MoveProbeIn moveProbeIn);
 
 }
