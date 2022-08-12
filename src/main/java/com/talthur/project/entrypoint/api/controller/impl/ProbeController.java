@@ -29,9 +29,9 @@ public class ProbeController implements ProbeControllerApi {
     private final ProbeUseCase probeUseCase;
 
     @Override
-    @PostMapping("/probes")
+    @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public ProbeOut createProbe(@RequestParam(name = "Direction") Direction direction,
+    public ProbeOut createProbe(@RequestParam(name = "direction") Direction direction,
         @Valid @RequestBody CreateProbeIn createProbeIn) {
         Probe probe = probeUseCase.createProbeOnPlanet(createProbeIn.planetName(), createProbeIn.coordinates(), direction,
             createProbeIn.name());
@@ -47,7 +47,7 @@ public class ProbeController implements ProbeControllerApi {
     }
 
     @Override
-    @PatchMapping("/probes")
+    @PatchMapping
     @ResponseStatus(code = HttpStatus.OK)
     public ProbeOut moveProbe(@Valid @RequestBody MoveProbeIn moveProbeIn) {
         Probe probe = probeUseCase.moveProbe(moveProbeIn.planetName(), moveProbeIn.probeName(), moveProbeIn.command());

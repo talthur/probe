@@ -19,21 +19,34 @@ public class Probe {
     private Coordinates coordinates;
 
 
-    public Probe(Direction orientationEnum, String probeName, Coordinates coordinates) {
+    public Probe(Direction orientationEnum, String probeName, Coordinates coordinates, Planet planet) {
         this.direction = orientationEnum;
         this.probeName = probeName;
         this.coordinates = coordinates;
+        planet.checkIfIsOccupied(coordinates);
+        Square[][] area = planet.getArea();
+        area[area.length - this.getCoordinates().x()][this.getCoordinates().y() - 1].setProbe(this);
+        planet.getProbes().put(probeName, this);
     }
 
-    public void rotateProbeRight() {
+    public void commandProbe(char command, Planet planet){
+        switch (command) {
+            case 'L' -> this.rotateProbeLeft();
+            case 'R' -> this.rotateProbeRight();
+            case 'M' -> this.moveProbe(planet);
+            default -> throw new BusinessException(BusinessError.INVALID_COMMAND);
+        }
+    }
+
+    private void rotateProbeRight() {
         direction = direction.turnRight();
     }
 
-    public void rotateProbeLeft() {
+    private void rotateProbeLeft() {
         direction = direction.turnLeft();
     }
 
-    public void moveProbe(Planet planet) {
+    private void moveProbe(Planet planet) {
         Coordinates nextCoordinates = coordinates.nextPosition(direction);
         Square[][] area = planet.getArea();
         area[area.length - coordinates.x()][coordinates.y() - 1].removeProbe();
