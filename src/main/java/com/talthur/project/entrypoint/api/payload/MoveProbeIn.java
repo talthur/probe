@@ -13,7 +13,7 @@ public record MoveProbeIn(@Schema(description = "Probe name")
 
                           @NotNull
                           @Schema(description = "Planet ID")
-                          String planetId,
+                          String planetName,
 
                           @Schema(description = "Command to move and rotate. 1 to 10 max", example = "LLRRMRM")
                           @Pattern(regexp = "^[LRM]+$")

@@ -13,19 +13,19 @@ public class PlanetMapper {
 
     public List<PlanetOut> mapListOfPlanetsToListOfPlanetsOut(List<Planet> planets) {
         return planets.stream().map(planet -> PlanetOut.builder()
-            .id(planet.getId())
+            .id(planet.getName())
             .x(planet.getArea().length)
             .y(Arrays.stream(planet.getArea()).map(squares -> squares.length).findAny().orElse(0))
-            .probeNames(new ArrayList<>(planet.getStarShips().keySet())).build()).toList();
+            .probeNames(new ArrayList<>(planet.getProbes().keySet())).build()).toList();
     }
 
     public PlanetOut mapPlanetToPlanetsOut(Planet planet) {
 
         return PlanetOut.builder()
-            .id(planet.getId())
+            .id(planet.getName())
             .y(planet.getArea().length)
             .x(Arrays.stream(planet.getArea()).map(squares -> squares.length).findAny().orElse(0))
-            .probeNames(new ArrayList<>(planet.getStarShips().keySet())).build();
+            .probeNames(new ArrayList<>(planet.getProbes().keySet())).build();
     }
 
 }

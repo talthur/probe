@@ -23,12 +23,13 @@ public class PlanetInMemory {
         planetList.set(index, planet);
     }
 
+    //Caso fosse um repositório real, criar paginação
     public List<Planet> getAll() {
         return planetList;
     }
 
-    public Planet getPlanet(String planetId) {
-        return planetList.stream().filter(planet -> planet.getId().equals(planetId)).findAny().orElseThrow(() -> new BusinessException(
+    public Planet getPlanet(String planetName) {
+        return planetList.stream().filter(planet -> planet.getName().equals(planetName)).findAny().orElseThrow(() -> new BusinessException(
             BusinessError.PLANET_NOT_EXIST));
     }
 

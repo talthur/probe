@@ -1,34 +1,61 @@
 package com.talthur.project.core.domain;
 
-import com.talthur.project.core.enums.OrientationEnum;
+import com.talthur.project.core.enums.Direction;
+import com.talthur.project.core.exception.BusinessException;
+import com.talthur.project.core.exception.errors.BusinessError;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.List;
 
-public class Probe extends StarShip {
+public class Probe {
 
-    public Probe(OrientationEnum orientationEnum, String probeName, int row, int column) {
-        super(orientationEnum, probeName, row, column);
+    @Getter
+    private final String probeName;
+    @Setter
+    @Getter
+    private Direction direction;
+    @Getter
+    @Setter
+    private Coordinates coordinates;
+
+
+    public Probe(Direction orientationEnum, String probeName, Coordinates coordinates, Planet planet) {
+        this.direction = orientationEnum;
+        this.probeName = probeName;
+        this.coordinates = coordinates;
+        planet.checkIfIsOccupied(coordinates);
+        Square[][] area = planet.getArea();
+        area[area.length - this.getCoordinates().x()][this.getCoordinates().y() - 1].setProbe(this);
+        planet.getProbes().put(probeName, this);
     }
 
-    @Override
-    public List<Integer> move() {
-        return switch (orientation) {
-            case NORTH -> List.of(0, -1);
-            case EAST -> List.of(1, 0);
-            case SOUTH -> List.of(0, 1);
-            case WEST -> List.of(-1, 0);
-        };
+    public void commandProbe(char command, Planet planet){
+        switch (command) {
+            case 'L' -> this.rotateProbeLeft();
+            case 'R' -> this.rotateProbeRight();
+            case 'M' -> this.moveProbe(planet);
+            default -> throw new BusinessException(BusinessError.INVALID_COMMAND);
+        }
     }
 
-    @Override
-    public void rotate(char command) {
-        if (command == 'L') {
-            this.orientation = orientation.getPrevious();
-        }
+    private void rotateProbeRight() {
+        direction = direction.turnRight();
+    }
 
-        if (command == 'R') {
-            this.orientation = orientation.getNext();
+    private void rotateProbeLeft() {
+        direction = direction.turnLeft();
+    }
+
+    private void moveProbe(Planet planet) {
+        Coordinates nextCoordinates = coordinates.nextPosition(direction);
+        Square[][] area = planet.getArea();
+        area[area.length - coordinates.x()][coordinates.y() - 1].removeProbe();
+        try {
+            area[area.length - nextCoordinates.x()][nextCoordinates.y() - 1].setProbe(this);
+        } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+            throw new BusinessException(BusinessError.PLACEMENT_NOT_ALLOWED_OFFLIMITS);
         }
+        this.setCoordinates(nextCoordinates);
     }
 
 }
